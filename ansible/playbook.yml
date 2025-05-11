@@ -1,7 +1,34 @@
-- hosts: local
-  tasks:
-    - name: Pull latest image
-      command: docker pull youruser/myapp-symfony
+---
+- name: Déploiement local avec Docker Compose
+  hosts: local
+  connection: local
+  gather_facts: false
 
-    - name: Run container
-      command: docker run -d -p 80:80 youruser/myapp-symfony
+  vars:
+    compose_file: "{{ playbook_dir }}/../docker-compose.yml"
+
+  tasks:
+    - name: "⬇️  Arrêter et supprimer les anciens conteneurs"
+      ansible.builtin.shell: docker-compose -f {{ compose_file }} down
+      args:
+        chdir: "{{ playbook_dir }}/.."
+
+    - name: "📦 Pull des dernières images (si vous en avez)"
+      ansible.builtin.shell: docker-compose -f {{ compose_file }} pull
+      args:
+        chdir: "{{ playbook_dir }}/.."
+      ignore_errors: yes
+
+    - name: "🚀 Démarrage des services en mode détaché"
+      ansible.builtin.shell: docker-compose -f {{ compose_file }} up -d
+      args:
+        chdir: "{{ playbook_dir }}/.."
+
+    - name: "🔍 Vérifier que le conteneur PHP est bien UP"
+      ansible.builtin.shell: docker ps --filter "name=php" --filter "status=running" --format '{{ "{{.Names}}" }}'
+      register: php_containers
+
+    - name: "❌ Erreur si PHP n'est pas démarré"
+      ansible.builtin.fail:
+        msg: "Le conteneur PHP n'est pas lancé !"
+      when: php_containers.stdout == ""
