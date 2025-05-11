@@ -1,0 +1,7 @@
+- hosts: local
+  tasks:
+    - name: Pull latest image
+      command: docker pull youruser/myapp-symfony
+
+    - name: Run container
+      command: docker run -d -p 80:80 youruser/myapp-symfony
