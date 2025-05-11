@@ -79,7 +79,8 @@ pipeline {
       steps {
         echo "🎯 Déploiement avec Ansible"
         sh '''
-          ansible-playbook -i ansible/inventory ansible/playbook.yml
+       ansible-playbook -i ansible/inventory ansible/playbook-local.yml
+
         '''
       }
     }
