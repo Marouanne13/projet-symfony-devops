@@ -1,12 +1,7 @@
 pipeline {
     agent any
 
-    stages {
-        stage('Clone') {
-            steps {
-              git 'https://github.com/Marouanne13/projet-symfony-devops.git'
-            }
-        }
+   
         stage('Composer Install') {
             steps {
                 sh 'docker-compose exec php composer install'
