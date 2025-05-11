@@ -14,7 +14,7 @@ services:
   nginx:
     image: nginx:alpine
     ports:
-      - "8081:80"          # attention au port libre
+      - "8082:80"          # attention au port libre
     volumes:
       - ./app:/var/www/html
       - ./jenkins/nginx.conf:/etc/nginx/conf.d/default.conf
