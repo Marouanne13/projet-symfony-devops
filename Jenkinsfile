@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                git 'https://github.com/ton-repo/symfony-devops.git'
+               git 'https://github.com/ton-repo/symfony-devops.git'
             }
         }
         stage('Composer Install') {
