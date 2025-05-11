@@ -1,18 +1,18 @@
 version: '3.8'
 
 services:
-  php:
+  php:   # ✅ Ce nom doit être exactement "php"
     build: .
-    container_name: symfony_php
-    working_dir: /var/www/html
+    container_name: php
     volumes:
       - ./app:/var/www/html
+    depends_on:
+      - mysql
     networks:
       - symfony
 
   nginx:
     image: nginx:alpine
-    container_name: symfony_nginx
     ports:
       - "8080:80"
     volumes:
@@ -25,28 +25,13 @@ services:
 
   mysql:
     image: mysql:5.7
-    container_name: symfony_mysql
-    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: symfony
       MYSQL_USER: symfony
       MYSQL_PASSWORD: symfony
     volumes:
-      - mysql_data:/var/lib/mysql
-    networks:
-      - symfony
-
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: symfony_phpmyadmin
-    restart: always
-    ports:
-      - "8081:80"
-    environment:
-      PMA_HOST: mysql
-    depends_on:
-      - mysql
+      - db_data:/var/lib/mysql
     networks:
       - symfony
 
@@ -54,4 +39,4 @@ networks:
   symfony:
 
 volumes:
-  mysql_data:
+  db_data:
