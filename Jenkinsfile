@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   environment {
-    SONAR_TOKEN = 'squ_1ff12c102b3b9c50acdd91aa28d76ba11515b23c'
+   SONAR_TOKEN = 'squ_1ff12c102b3b9c50acdd91aa28d76ba11515b23c'
     SONAR_HOST_URL = 'http://localhost:9000'
   } 
 
@@ -23,7 +23,6 @@ pipeline {
           docker-compose up -d
           sleep 5
           docker-compose ps
-          # Vérifie que le service "php" est bien UP
           docker-compose ps | grep php || (echo "❌ Conteneur PHP absent !" && exit 1)
         '''
       }
@@ -46,8 +45,7 @@ pipeline {
               -Dsonar.projectName=\"Symfony DevOps\" \
               -Dsonar.sources=./app \
               -Dsonar.host.url=\$SONAR_HOST_URL \
-              -Dsonar.login=\$SONAR_TOKEN \
-              -Dsonar.php.coverage.reportPaths=build/logs/clover.xml
+              -Dsonar.login=\$SONAR_TOKEN
           """
         }
       }
@@ -62,7 +60,7 @@ pipeline {
 
     stage('DockerHub Login & Push') {
       steps {
-        echo "🔐 Connexion à Docker Hub et Push"
+        echo "🔐 Connexion à Docker Hub et push"
         withCredentials([usernamePassword(
           credentialsId: 'dockerhub-creds',
           usernameVariable: 'DOCKER_USER',
@@ -70,9 +68,8 @@ pipeline {
         )]) {
           sh '''
             echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-           docker tag symfony-devops-app marouane1302/symfony-devops-app:latest
-           docker push marouane1302/symfony-devops-app:latest
-
+            docker tag symfony-devops-app $DOCKER_USER/symfony-devops-app:latest
+            docker push $DOCKER_USER/symfony-devops-app:latest
           '''
         }
       }
@@ -82,7 +79,6 @@ pipeline {
       steps {
         echo "🎯 Déploiement avec Ansible"
         sh '''
-          # Ajuste le chemin vers ton inventaire et ton playbook si besoin
           ansible-playbook -i ansible/inventory ansible/playbook.yml
         '''
       }
