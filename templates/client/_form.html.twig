@@ -1,0 +1,39 @@
+{{ form_start(form) }}
+
+    {{ form_errors(form) }}
+
+<div class="mb-3">
+    {{ form_label(form.managerName) }}
+    {{ form_widget(form.managerName, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.managerName) }}
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.companyName) }}
+    {{ form_widget(form.companyName, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.companyName) }}
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.phoneNumber) }}
+    {{ form_widget(form.phoneNumber, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.phoneNumber) }}
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.address) }}
+    {{ form_widget(form.address, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.address) }}
+</div>
+
+
+
+<div class="mb-3">
+    {{ form_label(form.country) }}
+    {{ form_widget(form.country, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.country) }}
+</div>
+
+<button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+
+{{ form_end(form)}}
