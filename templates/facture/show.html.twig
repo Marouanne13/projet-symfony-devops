@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la facture{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="card shadow rounded-4 p-4">
+        <h1 class="text-center mb-4">🧾 Détail de la Facture</h1>
+
+        <table class="table table-bordered table-hover">
+            <tbody>
+                <tr>
+                    <th class="bg-light">ID</th>
+                    <td>{{ facture.id }}</td>
+                </tr>
+                <tr>
+                    <th class="bg-light">N° Facture</th>
+                    <td>{{ facture.invoiceNumber }}</td>
+                </tr>
+                <tr>
+                    <th class="bg-light">Date de facturation</th>
+                    <td>{{ facture.billingDate|date('d/m/Y') }}</td>
+                </tr>
+                <tr>
+                    <th class="bg-light">Montant</th>
+                    <td>{{ facture.amount }} €</td>
+                </tr>
+                <tr>
+                    <th class="bg-light">Statut</th>
+                    <td>
+                        {% if facture.status == 'payée' %}
+                            <span class="badge bg-success">Payée</span>
+                        {% elseif facture.status == 'en attente' %}
+                            <span class="badge bg-warning text-dark">En attente</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ facture.status }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th class="bg-light">Note</th>
+                    <td>{{ facture.note }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-between mt-4">
+            <a href="{{ path('app_facture_index') }}" class="btn btn-outline-secondary">← Retour à la liste</a>
+            <div>
+                <a href="{{ path('app_facture_edit', {'id': facture.id}) }}" class="btn btn-outline-warning me-2">✏️ Modifier</a>
+                {{ include('facture/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

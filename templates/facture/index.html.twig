@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Factures{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Liste des Factures</h1>
+        <a href="{{ path('app_facture_new') }}" class="btn btn-success">➕ Nouvelle Facture</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle shadow-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>N° Facture</th>
+                    <th>Date de Facturation</th>
+                    <th>Montant</th>
+                    <th>Statut</th>
+                    <th>Note</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for facture in factures %}
+                    <tr>
+                        <td>{{ facture.id }}</td>
+                        <td>{{ facture.invoiceNumber }}</td>
+                        <td>{{ facture.billingDate|date('d/m/Y') }}</td>
+                        <td>{{ facture.amount }} €</td>
+                        <td>
+                            {% if facture.status == 'payée' %}
+                                <span class="badge bg-success">Payée</span>
+                            {% elseif facture.status == 'en attente' %}
+                                <span class="badge bg-warning text-dark">En attente</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ facture.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ facture.note }}</td>
+                        <td class="text-center">
+                            <a href="{{ path('app_facture_show', {'id': facture.id}) }}" class="btn btn-sm btn-outline-primary me-2">Afficher</a>
+                            <a href="{{ path('app_facture_edit', {'id': facture.id}) }}" class="btn btn-sm btn-outline-warning">Modifier</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted">Aucune facture trouvée.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

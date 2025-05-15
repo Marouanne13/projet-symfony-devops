@@ -1,0 +1,43 @@
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+
+    {{ form_errors(form) }}
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            {{ form_label(form.managerName, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.managerName, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.managerName) }}
+        </div>
+
+        <div class="col-md-6 mb-3">
+            {{ form_label(form.companyName, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.companyName, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.companyName) }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            {{ form_label(form.phoneNumber, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.phoneNumber, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.phoneNumber) }}
+        </div>
+
+        <div class="col-md-6 mb-3">
+            {{ form_label(form.address, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.address, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.address) }}
+        </div>
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.country, null, {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.country, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.country) }}
+    </div>
+
+    <button class="btn btn-primary">
+        {{ button_label|default('💾 Enregistrer') }}
+    </button>
+
+{{ form_end(form) }}

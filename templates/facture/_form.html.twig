@@ -1,0 +1,45 @@
+{{ form_start(form, {'attr': {'class': 'row g-4'}}) }}
+
+    {{ form_errors(form) }}
+
+    <div class="col-md-6">
+        {{ form_label(form.invoiceNumber, null, {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.invoiceNumber, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.invoiceNumber) }}
+    </div>
+
+    <div class="col-md-6">
+        {{ form_label(form.billingDate, null, {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.billingDate, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.billingDate) }}
+    </div>
+
+    <div class="col-md-6">
+        {{ form_label(form.amount, null, {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.amount, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.amount) }}
+    </div>
+
+    <div class="col-md-6">
+        {{ form_label(form.status, null, {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.status, {'attr': {'class': 'form-select'}}) }}
+        {{ form_errors(form.status) }}
+    </div>
+
+    <div class="col-12">
+        {{ form_label(form.note, null, {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.note, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.note) }}
+    </div>
+
+    <div class="col-12">
+        {{ form_label(form.client, null, {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.client, {'attr': {'class': 'form-select'}}) }}
+        {{ form_errors(form.client) }}
+    </div>
+
+    <div class="col-12">
+        <button class="btn btn-primary">{{ button_label|default('💾 Enregistrer') }}</button>
+    </div>
+
+{{ form_end(form) }}
