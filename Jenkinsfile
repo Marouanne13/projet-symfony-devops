@@ -14,13 +14,19 @@ pipeline {
         sh 'ls -la'
       }
     }
+stage('Install Dependencies') {
+  steps {
+    echo "📦 Installation des dépendances avec Composer via Docker"
+    sh '''
+      docker run --rm \
+        -v $(pwd):/app \
+        -w /app \
+        composer:2.5 \
+        install --no-interaction --optimize-autoloader
+    '''
+  }
+}
 
-    stage('Install Dependencies') {
-      steps {
-        echo "📦 Installation des dépendances avec Composer"
-        sh 'composer install --no-interaction --optimize-autoloader'
-      }
-    }
 
     stage('Run PHPUnit & Coverage') {
       steps {
