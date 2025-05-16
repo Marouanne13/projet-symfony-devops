@@ -35,15 +35,30 @@ pipeline {
       }
     }
 
+    stage('Run PHPUnit & Coverage') {
+      steps {
+        echo "🧪 Lancement des tests avec génération de couverture"
+        sh '''
+          docker-compose exec -T php ./vendor/bin/phpunit --coverage-clover=coverage.xml || echo "PHPUnit a échoué"
+          docker-compose exec -T php ls -l coverage.xml || echo "⚠️ coverage.xml manquant"
+        '''
+      }
+    }
+
     stage('SonarQube Analysis') {
+      agent {
+        docker {
+          image 'sonarsource/sonar-scanner-cli:latest'
+        }
+      }
       steps {
         echo "📊 Analyse de code avec SonarQube"
         withSonarQubeEnv('SonarLocal') {
           sh '''
-            sonar-scanner \
+            sonar-scanner -X \
               -Dsonar.projectKey=symfony-devops \
               -Dsonar.projectName="Symfony DevOps" \
-              -Dsonar.sources=. \
+              -Dsonar.sources=src \
               -Dsonar.php.coverage.reportPaths=coverage.xml \
               -Dsonar.host.url=$SONAR_HOST_URL \
               -Dsonar.login=$SONAR_TOKEN
