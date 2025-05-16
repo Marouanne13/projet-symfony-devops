@@ -3,10 +3,11 @@ pipeline {
 
   environment {
     SONAR_TOKEN = 'squ_1ff12c102b3b9c50acdd91aa28d76ba11515b23c'
-    SONAR_HOST_URL = 'http://localhost:9000'
+    SONAR_HOST_URL = 'http://172.17.0.1:9000'  // pour Docker sous Linux
   }
 
   stages {
+
     stage('Checkout') {
       steps {
         echo "🛎 Checkout du dépôt"
@@ -14,33 +15,33 @@ pipeline {
         sh 'ls -la'
       }
     }
-stage('Install Dependencies') {
-  steps {
-    echo "📦 Installation des dépendances avec Composer via Docker"
-    sh '''
-      docker run --rm \
-        -v $(pwd):/app \
-        -w /app \
-        composer:2.5 \
-        install --no-interaction --optimize-autoloader
-    '''
-  }
-}
 
+    stage('Install Dependencies') {
+      steps {
+        echo "📦 Installation des dépendances avec Composer via Docker"
+        sh '''
+          docker run --rm \
+            -v $(pwd):/app \
+            -w /app \
+            composer:2.5 \
+            install --no-interaction --optimize-autoloader
+        '''
+      }
+    }
 
     stage('Run PHPUnit & Coverage') {
       steps {
-        echo "🧪 Lancement des tests avec génération de couverture"
+        echo "🧪 Lancement des tests avec couverture"
         sh '''
-          ./vendor/bin/phpunit --coverage-clover=coverage.xml || echo "PHPUnit a échoué"
-          ls -l coverage.xml || echo "⚠️ coverage.xml manquant"
+          ./vendor/bin/phpunit --coverage-clover=coverage.xml || echo "❌ PHPUnit a échoué"
+          [ -f coverage.xml ] && echo "✅ coverage.xml trouvé" || echo "⚠️ coverage.xml manquant"
         '''
       }
     }
 
     stage('SonarQube Analysis') {
       steps {
-        echo "📊 Analyse de code avec SonarQube (via Docker CLI)"
+        echo "📊 Analyse SonarQube avec le scanner Docker"
         withSonarQubeEnv('SonarLocal') {
           sh '''
             docker run --rm \
@@ -52,7 +53,7 @@ stage('Install Dependencies') {
                 -Dsonar.projectName="Symfony DevOps" \
                 -Dsonar.sources=src \
                 -Dsonar.php.coverage.reportPaths=coverage.xml \
-                -Dsonar.host.url=http://host.docker.internal:9000 \
+                -Dsonar.host.url=$SONAR_HOST_URL \
                 -Dsonar.login=$SONAR_TOKEN
           '''
         }
@@ -68,7 +69,7 @@ stage('Install Dependencies') {
 
     stage('Push to DockerHub') {
       steps {
-        echo "🔐 Connexion et push vers Docker Hub"
+        echo "📤 Push de l’image sur Docker Hub"
         withCredentials([usernamePassword(
           credentialsId: 'dockerhub-creds',
           usernameVariable: 'DOCKER_USER',
