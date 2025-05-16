@@ -46,22 +46,21 @@ pipeline {
     }
 
     stage('SonarQube Analysis') {
-      agent {
-        docker {
-          image 'sonarsource/sonar-scanner-cli:latest'
-        }
-      }
       steps {
-        echo "📊 Analyse de code avec SonarQube"
+        echo "📊 Analyse de code avec SonarQube (via Docker CLI)"
         withSonarQubeEnv('SonarLocal') {
           sh '''
-            sonar-scanner -X \
-              -Dsonar.projectKey=symfony-devops \
-              -Dsonar.projectName="Symfony DevOps" \
-              -Dsonar.sources=src \
-              -Dsonar.php.coverage.reportPaths=coverage.xml \
-              -Dsonar.host.url=$SONAR_HOST_URL \
-              -Dsonar.login=$SONAR_TOKEN
+            docker run --rm \
+              -v $(pwd):/usr/src \
+              -w /usr/src \
+              sonarsource/sonar-scanner-cli:latest \
+              sonar-scanner -X \
+                -Dsonar.projectKey=symfony-devops \
+                -Dsonar.projectName="Symfony DevOps" \
+                -Dsonar.sources=src \
+                -Dsonar.php.coverage.reportPaths=coverage.xml \
+                -Dsonar.host.url=$SONAR_HOST_URL \
+                -Dsonar.login=$SONAR_TOKEN
           '''
         }
       }
