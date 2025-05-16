@@ -15,23 +15,10 @@ pipeline {
       }
     }
 
-    stage('Start Docker Compose') {
-      steps {
-        echo "🚀 Lancement des services Docker"
-        sh '''
-          docker-compose down || true
-          docker-compose up -d --build
-          sleep 10
-          docker-compose ps
-          docker-compose exec -T php php -v || (echo "❌ Le conteneur PHP ne fonctionne pas !" && exit 1)
-        '''
-      }
-    }
-
     stage('Install Dependencies') {
       steps {
         echo "📦 Installation des dépendances avec Composer"
-        sh 'docker-compose exec -T php composer install --no-interaction --optimize-autoloader'
+        sh 'composer install --no-interaction --optimize-autoloader'
       }
     }
 
@@ -39,8 +26,8 @@ pipeline {
       steps {
         echo "🧪 Lancement des tests avec génération de couverture"
         sh '''
-          docker-compose exec -T php ./vendor/bin/phpunit --coverage-clover=coverage.xml || echo "PHPUnit a échoué"
-          docker-compose exec -T php ls -l coverage.xml || echo "⚠️ coverage.xml manquant"
+          ./vendor/bin/phpunit --coverage-clover=coverage.xml || echo "PHPUnit a échoué"
+          ls -l coverage.xml || echo "⚠️ coverage.xml manquant"
         '''
       }
     }
