@@ -3,7 +3,7 @@ pipeline {
 
   environment {
     SONAR_TOKEN = 'squ_1ff12c102b3b9c50acdd91aa28d76ba11515b23c'
-    SONAR_HOST_URL = 'http://172.17.0.1:9000'  // pour Docker sous Linux
+    SONAR_HOST_URL = 'http://10.0.2.15:9000'  // IP locale Debian
   }
 
   stages {
@@ -52,7 +52,7 @@ pipeline {
                 -Dsonar.projectName="Symfony DevOps" \
                 -Dsonar.sources=src \
                 -Dsonar.php.coverage.reportPaths=coverage.xml \
-                -Dsonar.host.url=$SONAR_HOST_URL \
+                -Dsonar.host.url=http://10.0.2.15:9000 \
                 -Dsonar.login=$SONAR_TOKEN
           '''
         }
