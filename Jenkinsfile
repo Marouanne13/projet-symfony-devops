@@ -2,9 +2,9 @@ pipeline {
   agent any
 
   environment {
-   SONAR_TOKEN = 'squ_1ff12c102b3b9c50acdd91aa28d76ba11515b23c'
+    SONAR_TOKEN = 'squ_1ff12c102b3b9c50acdd91aa28d76ba11515b23c'
     SONAR_HOST_URL = 'http://localhost:9000'
-  } 
+  }
 
   stages {
     stage('Checkout') {
@@ -15,52 +15,53 @@ pipeline {
       }
     }
 
-    stage('Docker Compose Start') {
+    stage('Start Docker Compose') {
       steps {
-        echo "🚀 Démarrage des services Docker"
+        echo "🚀 Lancement des services Docker"
         sh '''
           docker-compose down || true
-          docker-compose up -d
-          sleep 5
+          docker-compose up -d --build
+          sleep 10
           docker-compose ps
-          docker-compose ps | grep php || (echo "❌ Conteneur PHP absent !" && exit 1)
+          docker-compose exec -T php php -v || (echo "❌ Le conteneur PHP ne fonctionne pas !" && exit 1)
         '''
       }
     }
 
-    stage('Composer Install') {
+    stage('Install Dependencies') {
       steps {
-        echo "📦 Installation des dépendances Symfony"
-        sh 'docker-compose exec php composer install --no-interaction --optimize-autoloader'
+        echo "📦 Installation des dépendances avec Composer"
+        sh 'docker-compose exec -T php composer install --no-interaction --optimize-autoloader'
       }
     }
 
-    stage('SonarQube: Start Analysis') {
+    stage('SonarQube Analysis') {
       steps {
-        echo "📊 Début de l’analyse SonarQube"
+        echo "📊 Analyse de code avec SonarQube"
         withSonarQubeEnv('MySonarQube') {
-          sh """
+          sh '''
             sonar-scanner \
               -Dsonar.projectKey=symfony-devops \
-              -Dsonar.projectName=\"Symfony DevOps\" \
-              -Dsonar.sources=./app \
-              -Dsonar.host.url=\$SONAR_HOST_URL \
-              -Dsonar.login=\$SONAR_TOKEN
-          """
+              -Dsonar.projectName="Symfony DevOps" \
+              -Dsonar.sources=. \
+              -Dsonar.php.coverage.reportPaths=coverage.xml \
+              -Dsonar.host.url=$SONAR_HOST_URL \
+              -Dsonar.login=$SONAR_TOKEN
+          '''
         }
       }
     }
 
     stage('Build Docker Image') {
       steps {
-        echo "🐳 Construction de l'image Docker de l'application"
+        echo "🐳 Construction de l’image Docker"
         sh 'docker build -t symfony-devops-app .'
       }
     }
 
-    stage('DockerHub Login & Push') {
+    stage('Push to DockerHub') {
       steps {
-        echo "🔐 Connexion à Docker Hub et push"
+        echo "🔐 Connexion et push vers Docker Hub"
         withCredentials([usernamePassword(
           credentialsId: 'dockerhub-creds',
           usernameVariable: 'DOCKER_USER',
@@ -75,26 +76,23 @@ pipeline {
       }
     }
 
-    stage('Ansible Deploy') {
+    stage('Deploy with Ansible') {
       steps {
-        echo "🎯 Déploiement avec Ansible"
-        sh '''
-       ansible-playbook -i ansible/inventory ansible/playbook-local.yml
-
-        '''
+        echo "🚀 Déploiement via Ansible"
+        sh 'ansible-playbook -i ansible/inventory ansible/playbook-local.yml'
       }
     }
   }
 
   post {
     always {
-      echo '📋 Pipeline terminée (succès ou échec)'
+      echo '📋 Pipeline terminée.'
     }
     success {
-      echo '✅ Tout s’est bien passé !'
+      echo '✅ Pipeline exécutée avec succès.'
     }
     failure {
-      echo '❌ Échec de la pipeline, consulte les logs.'
+      echo '❌ Une erreur est survenue durant l’exécution de la pipeline.'
     }
   }
 }
