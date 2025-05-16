@@ -59,7 +59,7 @@ pipeline {
                 -Dsonar.projectName="Symfony DevOps" \
                 -Dsonar.sources=src \
                 -Dsonar.php.coverage.reportPaths=coverage.xml \
-                -Dsonar.host.url=$SONAR_HOST_URL \
+                -Dsonar.host.url=http://host.docker.internal:9000 \
                 -Dsonar.login=$SONAR_TOKEN
           '''
         }
