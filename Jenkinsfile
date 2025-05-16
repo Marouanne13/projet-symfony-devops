@@ -38,7 +38,7 @@ pipeline {
     stage('SonarQube Analysis') {
       steps {
         echo "📊 Analyse de code avec SonarQube"
-        withSonarQubeEnv('MySonarQube') {
+        withSonarQubeEnv('SONAR_TOKEN') {
           sh '''
             sonar-scanner \
               -Dsonar.projectKey=symfony-devops \
