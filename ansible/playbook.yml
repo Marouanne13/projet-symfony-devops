@@ -5,7 +5,7 @@
   gather_facts: false
 
   vars:
-    compose_file: "{{ playbook_dir }}/../docker-compose.yml"
+    compose_file: "{{ playbook_dir }}/../docker-compose.yaml"
 
   tasks:
     - name: "⬇️  Arrêter et supprimer les anciens conteneurs"
@@ -18,17 +18,3 @@
       args:
         chdir: "{{ playbook_dir }}/.."
       ignore_errors: yes
-
-    - name: "🚀 Démarrage des services en mode détaché"
-      ansible.builtin.shell: docker-compose -f {{ compose_file }} up -d
-      args:
-        chdir: "{{ playbook_dir }}/.."
-
-    - name: "🔍 Vérifier que le conteneur PHP est bien UP"
-      ansible.builtin.shell: docker ps --filter "name=php" --filter "status=running" --format '{{ "{{.Names}}" }}'
-      register: php_containers
-
-    - name: "❌ Erreur si PHP n'est pas démarré"
-      ansible.builtin.fail:
-        msg: "Le conteneur PHP n'est pas lancé !"
-      when: php_containers.stdout == ""
