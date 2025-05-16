@@ -7,10 +7,9 @@ pipeline {
   }
 
   stages {
-
     stage('Checkout') {
       steps {
-        echo "🛎 Checkout du dépôt"
+        echo "🛎 Clonage du dépôt Symfony DevOps"
         git url: 'https://github.com/Marouanne13/projet-symfony-devops.git', branch: 'main'
         sh 'ls -la'
       }
