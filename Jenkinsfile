@@ -60,6 +60,19 @@ pipeline {
       }
     }
 
+    stage('Start Docker Compose') {
+      steps {
+        dir('') {
+          echo "🚀 Lancement des services Docker : Symfony, Prometheus, Grafana"
+          sh '''
+            docker-compose down || true
+            docker-compose up -d --build
+            docker-compose ps
+          '''
+        }
+      }
+    }
+
     stage('Build Docker Image') {
       steps {
         echo "🐳 Construction de l’image Docker"
