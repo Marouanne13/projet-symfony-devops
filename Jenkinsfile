@@ -7,6 +7,7 @@ pipeline {
   }
 
   stages {
+
     stage('Checkout') {
       steps {
         echo "🛎 Clonage du dépôt Symfony DevOps"
@@ -52,7 +53,7 @@ pipeline {
                 -Dsonar.projectName="Symfony DevOps" \
                 -Dsonar.sources=src \
                 -Dsonar.php.coverage.reportPaths=coverage.xml \
-                -Dsonar.host.url=http://10.0.2.15:9000 \
+                -Dsonar.host.url=$SONAR_HOST_URL \
                 -Dsonar.login=$SONAR_TOKEN
           '''
         }
@@ -86,8 +87,15 @@ pipeline {
     stage('Deploy with Ansible') {
       steps {
         echo "🚀 Déploiement via Ansible"
-       sh 'ansible-playbook -i ansible/inventory ansible/playbook.yml'
+        sh 'ansible-playbook -i ansible/inventory ansible/playbook.yml'
+      }
+    }
 
+    stage('Check Monitoring') {
+      steps {
+        echo "📡 Vérification des services de monitoring"
+        sh 'curl -s http://localhost:9090/ | grep Prometheus || echo "❌ Prometheus KO"'
+        sh 'curl -s http://localhost:3000/ | grep Grafana || echo "❌ Grafana KO"'
       }
     }
   }
