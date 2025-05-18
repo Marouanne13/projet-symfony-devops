@@ -105,13 +105,32 @@ pipeline {
       }
     }
 
-    stage('Check Monitoring') {
-      steps {
-        echo "📡 Vérification des services de monitoring"
-        sh 'curl -s http://localhost:9090/ | grep Prometheus || echo "❌ Prometheus KO"'
-        sh 'curl -s http://localhost:3000/ | grep Grafana || echo "❌ Grafana KO"'
-      }
-    }
+  stage('Check Monitoring') {
+  steps {
+    echo "📡 Vérification des services de monitoring"
+
+    // Vérifie que Prometheus retourne un code HTTP 200
+    sh '''
+      echo -n "🔎 Prometheus : "
+      if curl -s -o /dev/null -w "%{http_code}" http://localhost:9090 | grep -q "200"; then
+        echo "✅ OK"
+      else
+        echo "❌ KO"
+      fi
+    '''
+
+    // Vérifie que Grafana retourne un code HTTP 200
+    sh '''
+      echo -n "🔎 Grafana : "
+      if curl -s -o /dev/null -w "%{http_code}" http://localhost:3000 | grep -q "200"; then
+        echo "✅ OK"
+      else
+        echo "❌ KO"
+      fi
+    '''
+  }
+}
+
   }
 
   post {
