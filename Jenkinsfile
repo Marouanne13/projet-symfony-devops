@@ -105,23 +105,26 @@ pipeline {
       }
     }
 
-  stage('Check Monitoring') {
+
+stage('Check Monitoring') {
   steps {
     echo "⏳ Attente du démarrage de Grafana & Prometheus"
     sh 'sleep 30'
 
-    echo "📡 Vérification des services de monitoring"
+    echo "🔍 Vérification des services de monitoring"
+
     sh '''
       echo -n "🔎 Prometheus : "
-      if curl -s -o /dev/null -w "%{http_code}" http://localhost:9090 | grep -q "200"; then
+      if curl -s -o /dev/null -w "%{http_code}" http://10.0.2.15:9090 | grep -q "200"; then
         echo "✅ OK"
       else
         echo "❌ KO"
       fi
     '''
+
     sh '''
       echo -n "🔎 Grafana : "
-      if curl -s -o /dev/null -w "%{http_code}" http://localhost:3001 | grep -q "200"; then
+      if curl -s -o /dev/null -w "%{http_code}" http://10.0.2.15:3001 | grep -q "200"; then
         echo "✅ OK"
       else
         echo "❌ KO"
