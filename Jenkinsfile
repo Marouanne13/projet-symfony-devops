@@ -122,7 +122,7 @@ pipeline {
     // Vérifie que Grafana retourne un code HTTP 200
     sh '''
       echo -n "🔎 Grafana : "
-      if curl -s -o /dev/null -w "%{http_code}" http://localhost:3000 | grep -q "200"; then
+      if curl -s -o /dev/null -w "%{http_code}" http://localhost:3001 | grep -q "200"; then
         echo "✅ OK"
       else
         echo "❌ KO"
