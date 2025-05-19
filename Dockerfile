@@ -15,7 +15,9 @@ WORKDIR /var/www/html
 COPY . .
 
 # Installer les dépendances PHP
-RUN composer install --no-interaction --optimize-autoloader
+RUN composer install --no-interaction --optimize-autoloader \
+    && composer require artprima/prometheus-metrics-bundle
+
 
 # Donner les bons droits
 RUN chown -R www-data:www-data /var/www/html
