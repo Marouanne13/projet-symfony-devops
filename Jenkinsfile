@@ -112,8 +112,8 @@ stage('Check Monitoring') {
     sh 'sleep 30'
 
     script {
-      def prometheusStatus = sh(script: 'curl -s -o /dev/null -w "%{http_code}" http://localhost:9090', returnStdout: true).trim()
-      def grafanaStatus = sh(script: 'curl -s -o /dev/null -w "%{http_code}" http://localhost:3001', returnStdout: true).trim()
+      def prometheusStatus = sh(script: 'curl -s -o /dev/null -w "%{http_code}" http://php:9090', returnStdout: true).trim()
+      def grafanaStatus = sh(script: 'curl -s -o /dev/null -w "%{http_code}" http://grafana:3000', returnStdout: true).trim()
 
       if (prometheusStatus != "200") {
         error "❌ Prometheus ne répond pas (HTTP ${prometheusStatus})"
