@@ -51,15 +51,19 @@ services:
     networks:
       - symfony
 
-  grafana:
-    image: grafana/grafana
-    container_name: grafana
-    ports:
-      - "3001:3000"
-    depends_on:
-      - php
-    networks:
-      - symfony
+ grafana:
+  image: grafana/grafana
+  container_name: grafana
+  ports:
+    - "3001:3000"
+  depends_on:
+    - php
+  volumes:
+    - ./grafana/dashboards:/var/lib/grafana/dashboards
+    - ./grafana/provisioning:/etc/grafana/provisioning
+  networks:
+    - symfony
+
 
 volumes:
   db_data:
