@@ -9,6 +9,8 @@ services:
       - .:/var/www/html
     depends_on:
       - mysql
+    ports:
+      - "9090:9090"  # Exposer Prometheus
     networks:
       - symfony
 
@@ -49,25 +51,13 @@ services:
     networks:
       - symfony
 
-  prometheus:
-    image: prom/prometheus
-    container_name: prometheus
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./prometheus:/etc/prometheus
-    command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
-    networks:
-      - symfony
-
   grafana:
     image: grafana/grafana
     container_name: grafana
     ports:
       - "3001:3000"
     depends_on:
-      - prometheus
+      - php
     networks:
       - symfony
 
