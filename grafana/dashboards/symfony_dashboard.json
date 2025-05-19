@@ -1,0 +1,24 @@
+{
+  "id": null,
+  "title": "Symfony App Metrics",
+  "panels": [
+    {
+      "type": "graph",
+      "title": "Nombre de requêtes Symfony",
+      "targets": [
+        {
+          "expr": "app_request_count",
+          "interval": "",
+          "legendFormat": "{{endpoint}}",
+          "refId": "A"
+        }
+      ],
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 9 }
+    }
+  ],
+  "timezone": "browser",
+  "schemaVersion": 36,
+  "version": 1,
+  "refresh": "10s"
+}
