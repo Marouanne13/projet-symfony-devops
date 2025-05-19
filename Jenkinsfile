@@ -111,25 +111,22 @@ stage('Check Monitoring') {
     echo "⏳ Attente du démarrage de Grafana & Prometheus"
     sh 'sleep 30'
 
-    echo "🔍 Vérification des services de monitoring"
+    script {
+      def prometheusStatus = sh(script: 'curl -s -o /dev/null -w "%{http_code}" http://localhost:9090', returnStdout: true).trim()
+      def grafanaStatus = sh(script: 'curl -s -o /dev/null -w "%{http_code}" http://localhost:3001', returnStdout: true).trim()
 
-    sh '''
-      echo -n "🔎 Prometheus : "
-      if curl -s -o /dev/null -w "%{http_code}" http://10.0.2.15:9090 | grep -q "200"; then
-        echo "✅ OK"
-      else
-        echo "❌ KO"
-      fi
-    '''
+      if (prometheusStatus != "200") {
+        error "❌ Prometheus ne répond pas (HTTP ${prometheusStatus})"
+      } else {
+        echo "✅ Prometheus est UP"
+      }
 
-    sh '''
-      echo -n "🔎 Grafana : "
-      if curl -s -o /dev/null -w "%{http_code}" http://10.0.2.15:3001 | grep -q "200"; then
-        echo "✅ OK"
-      else
-        echo "❌ KO"
-      fi
-    '''
+      if (grafanaStatus != "200") {
+        error "❌ Grafana ne répond pas (HTTP ${grafanaStatus})"
+      } else {
+        echo "✅ Grafana est UP"
+      }
+    }
   }
 }
 
