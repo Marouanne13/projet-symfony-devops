@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   environment {
-    SONAR_TOKEN = 'squ_1ff12c102b3b9c50acdd91aa28d76ba11515b23c'
+    SONAR_TOKEN = 'squ_f4bc8bf4d1612e803e20c69672ddd9150d5c15c0'
     SONAR_HOST_URL = 'http://10.0.2.15:9000'  // IP locale Debian
   }
 
